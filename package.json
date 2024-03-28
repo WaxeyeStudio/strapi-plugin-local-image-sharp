@@ -1,6 +1,6 @@
 {
   "name": "strapi-plugin-local-image-sharp",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "Dynamically resize, format and optimize images based on url modifiers",
   "strapi": {
     "displayName": "Local Image Sharp",
@@ -32,10 +32,10 @@
   "dependencies": {
     "@koa/router": "^12.0.1",
     "etag": "^1.8.1",
-    "ipx": "^3.0.1",
+    "ipx": "^2.1.0",
     "ohash": "^1.1.3",
-    "qs": "^6.12.0",
-    "ufo": "^1.5.2"
+    "qs": "^6.11.2",
+    "ufo": "^1.4.0"
   },
   "peerDependencies": {
     "@strapi/strapi": "^4.0.0",
