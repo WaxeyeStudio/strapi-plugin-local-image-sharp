@@ -4,18 +4,20 @@
   "version": "0.1.0",
   "description": "A Strapi application",
   "scripts": {
-    "develop": "strapi develop",
+    "dev": "strapi develop",
     "start": "strapi start",
-    "build": "strapi build",
-    "strapi": "strapi"
+    "build": "strapi build"
   },
-  "devDependencies": {},
   "dependencies": {
-    "@strapi/strapi": "4.5.5",
-    "@strapi/plugin-users-permissions": "4.5.5",
-    "@strapi/plugin-i18n": "4.5.5",
-    "strapi-plugin-local-image-sharp": "link:..",
-    "better-sqlite3": "7.4.6"
+    "@strapi/plugin-users-permissions": "^5.6.0",
+    "@strapi/strapi": "^5.6.0",
+    "@strapi/utils": "^5.6.0",
+    "better-sqlite3": "^11.7.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.28.1",
+    "strapi-plugin-local-image-sharp": "file:..",
+    "styled-components": "^6.1.14"
   },
   "author": {
     "name": "A Strapi developer"
@@ -24,8 +26,13 @@
     "uuid": "de665554-7499-4829-b112-0a4ded35dc98"
   },
   "engines": {
-    "node": ">=14.19.1 <=18.x.x",
+    "node": ">=20.x.x <=22.x.x",
     "npm": ">=6.0.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "volta": {
+    "node": "22.12.0",
+    "yarn": "1.22.22",
+    "npm": "10.9.2"
+  }
 }
