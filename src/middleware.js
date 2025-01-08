@@ -1,5 +1,5 @@
 'use strict'
-
+  
 const qs = require('qs')
 const { decode } = require('ufo')
 const { hash } = require('ohash')
@@ -63,9 +63,9 @@ function createMiddleware(ipx) {
 
     // If cache enabled, check if file exists
     if (config.cacheDir) {
-      tempFilePath = join(config.cacheDir, `${objectHash}.raw`)
-      tempTypePath = join(config.cacheDir, `${objectHash}.mime`)
-      tempEtagPath = join(config.cacheDir, `${objectHash}.etag`)
+      tempFilePath = join(config.cacheDir, `${ objectHash }.raw`)
+      tempTypePath = join(config.cacheDir, `${ objectHash }.mime`)
+      tempEtagPath = join(config.cacheDir, `${ objectHash }.etag`)
 
       if (existsSync(tempFilePath)) {
         try {
@@ -80,7 +80,7 @@ function createMiddleware(ipx) {
 
           // Cache-Control
           if (config.maxAge) {
-            ctx.set('Cache-Control', `max-age=${+config.maxAge}, public, s-maxage=${+config.maxAge}`)
+            ctx.set('Cache-Control', `max-age=${ +config.maxAge }, public, s-maxage=${ +config.maxAge }`)
           }
 
           // Mime
@@ -110,13 +110,13 @@ function createMiddleware(ipx) {
             return
           }
         }
-        ctx.set('Last-Modified', `${+src.mtime}`)
+        ctx.set('Last-Modified', `${ +src.mtime }`)
       }
 
       const maxAge = src.maxAge ?? config.maxAge
 
       if (maxAge) {
-        ctx.set('Cache-Control', `max-age=${+maxAge}, public, s-maxage=${+maxAge}`)
+        ctx.set('Cache-Control', `max-age=${ +maxAge }, public, s-maxage=${ +maxAge }`)
       }
 
       // Get converted image
@@ -128,7 +128,7 @@ function createMiddleware(ipx) {
       // If cache enabled, write image to temp dir
       if (tempTypePath && tempFilePath) {
         Promise.all([
-          writeFile(tempTypePath, `image/${format}`, 'utf-8'),
+          writeFile(tempTypePath, `image/${ format }`, 'utf-8'),
           writeFile(tempEtagPath, etag, 'utf-8'),
           writeFile(tempFilePath, data)
         ]).catch(() => {
@@ -144,13 +144,13 @@ function createMiddleware(ipx) {
 
       // Mime
       if (format) {
-        ctx.set('Content-Type', `image/${format}`)
+        ctx.set('Content-Type', `image/${ format }`)
       }
 
       ctx.body = data
     } catch (error) {
       const statusCode = parseInt(error.statusCode, 10) || 500
-      const statusMessage = error.message ? `IPX Error (${error.message})` : `IPX Error (${statusCode})`
+      const statusMessage = error.message ? `IPX Error (${ error.message })` : `IPX Error (${ statusCode })`
       strapi.log.debug(statusMessage)
       // console.error(error);
 

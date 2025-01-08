@@ -1,7 +1,7 @@
 'use strict';
 
 const { pluginConfigSchema } = require('./schema');
-
+ 
 module.exports = {
   config: {
     default: ({ env }) => ({

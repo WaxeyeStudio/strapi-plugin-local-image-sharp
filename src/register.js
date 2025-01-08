@@ -11,7 +11,7 @@ function register({ strapi }) {
   config.srcDir = strapi.dirs?.static?.public ?? strapi.dirs?.public
 
   strapi.log.info(`Using Local Image Sharp plugin`)
-  strapi.log.info(`- Source directory: ${config.srcDir}`)
+  strapi.log.info(`- Source directory: ${ config.srcDir }`)
 
   if (config.cacheDir) {
     const cwd = process.cwd()
@@ -27,7 +27,7 @@ function register({ strapi }) {
       mkdirSync(config.cacheDir, { recursive: true })
     }
 
-    strapi.log.info(`- Cache directory: ${config.cacheDir}`)
+    strapi.log.info(`- Cache directory: ${ config.cacheDir }`)
   }
 
   const router = new Router()
@@ -38,7 +38,7 @@ function register({ strapi }) {
       storage: ipxFSStorage({ dir: config.srcDir + path })
     })
 
-    router.get(`${path}/(.*)`, createMiddleware(ipx))
+    router.get(`${ path }/(.*)`, createMiddleware(ipx))
   })
 
   strapi.server.use(router.routes())
