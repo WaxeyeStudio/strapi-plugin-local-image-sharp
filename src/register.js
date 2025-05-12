@@ -7,7 +7,7 @@ const { existsSync, mkdirSync } = require('fs')
 const { createMiddleware } = require('./middleware')
 
 function register({ strapi }) {
-  const config = strapi.config.get('plugin.local-image-sharp')
+  const config = strapi.config.get('plugin::local-image-sharp')
   config.srcDir = strapi.dirs?.static?.public ?? strapi.dirs?.public
 
   strapi.log.info(`Using Local Image Sharp plugin`)

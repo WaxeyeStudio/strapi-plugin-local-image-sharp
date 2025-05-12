@@ -1,5 +1,5 @@
 'use strict'
-  
+
 const qs = require('qs')
 const { decode } = require('ufo')
 const { hash } = require('ohash')
@@ -9,7 +9,7 @@ const { writeFile, readFile } = require('fs/promises')
 const getEtag = require('etag')
 
 function createMiddleware(ipx) {
-  const config = strapi.config.get('plugin.local-image-sharp')
+  const config = strapi.config.get('plugin::local-image-sharp')
 
   return async function ipxMiddleware(ctx, next) {
     let path = null
