@@ -1,5 +1,4 @@
-'use strict'
+// Import the plugin
+import plugin from './src/index.js'
 
-const plugin = require('./src')
-
-module.exports = plugin
+export default plugin

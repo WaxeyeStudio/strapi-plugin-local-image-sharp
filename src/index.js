@@ -1,11 +1,9 @@
-'use strict'
+import { config } from './config/index.js'
+import { register } from './register.js'
 
-const { config } = require('./config');
-const { register } = require('./register')
- 
 const plugin = {
   config,
   register,
 }
 
-module.exports = plugin
+export default plugin

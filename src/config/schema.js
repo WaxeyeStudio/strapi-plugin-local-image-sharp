@@ -1,13 +1,7 @@
-'use strict';
+import yup from 'yup'
 
-const yup = require('yup');
- 
-const pluginConfigSchema = yup.object().shape({
+export const pluginConfigSchema = yup.object().shape({
   cacheDir: yup.string(),
   maxAge: yup.number().moreThan(0),
   paths: yup.array().of(yup.string()),
-});
-
-module.exports = {
-  pluginConfigSchema,
-};
+})

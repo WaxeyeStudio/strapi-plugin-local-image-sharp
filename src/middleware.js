@@ -1,5 +1,3 @@
-'use strict'
-
 /**
  * Enhanced middleware for image processing with improved stability and error handling:
  * - Added proper stream error handling and cleanup
@@ -10,24 +8,24 @@
  * - Added memory optimization for large images
  */
 
-const qs = require('qs')
-const { decode } = require('ufo')
-const { hash } = require('ohash')
-const { join } = require('path')
-const { createReadStream, existsSync } = require('fs')
-const { writeFile, readFile } = require('fs/promises')
-const getEtag = require('etag')
+import { createReadStream, existsSync } from 'node:fs'
+import { readFile, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import getEtag from 'etag'
+import { hash } from 'ohash'
+import qs from 'qs'
+import { decode } from 'ufo'
 
 function createMiddleware(ipx) {
   const config = strapi.config.get('plugin::local-image-sharp')
 
   return async function ipxMiddleware(ctx, next) {
     let path = null
-    config.paths.forEach((target) => {
+    for (const target of config.paths) {
       if (ctx.req.url.includes(target)) {
         path = ctx.req.url.split(target).join('')
       }
-    })
+    }
 
     if (!path) {
       const statusCode = 500
@@ -70,9 +68,9 @@ function createMiddleware(ipx) {
     }
 
     // Validate file extension
-    const fileExt = id.split('.').pop().toUpperCase();
+    const fileExt = id.split('.').pop().toUpperCase()
     if (!allowedTypes.includes(fileExt)) {
-      strapi.log.debug(`Unsupported file type: ${fileExt}`);
+      strapi.log.debug(`Unsupported file type: ${ fileExt }`)
       await next()
       return
     }
@@ -83,16 +81,16 @@ function createMiddleware(ipx) {
       for (const [key, value] of Object.entries(modifiers)) {
         // Check for reasonable limits on numeric values
         if (typeof value === 'string' && /^\d+$/.test(value)) {
-          const numValue = parseInt(value, 10);
+          const numValue = Number.parseInt(value, 10)
           // Limit image dimensions to reasonable values (e.g., 5000px)
           if ((key === 'w' || key === 'h' || key === 'width' || key === 'height') && numValue > 5000) {
-            modifiers[key] = '5000'; // Cap at 5000px
-            strapi.log.debug(`Capped ${key} dimension from ${value} to 5000px`);
+            modifiers[key] = '5000' // Cap at 5000px
+            strapi.log.debug(`Capped ${ key } dimension from ${ value } to 5000px`)
           }
         }
       }
     } catch (error) {
-      strapi.log.error(`Modifier validation error: ${error.message}`);
+      strapi.log.error(`Modifier validation error: ${ error.message }`)
       // Continue with original modifiers if validation fails
     }
 
@@ -111,7 +109,7 @@ function createMiddleware(ipx) {
 
           // Set up stream error handling
           stream.on('error', (err) => {
-            strapi.log.error(`Stream error: ${err.message}`)
+            strapi.log.error(`Stream error: ${ err.message }`)
             // If the stream errors after headers are sent, we can't do much
             if (!ctx.headerSent) {
               ctx.status = 500
@@ -138,7 +136,7 @@ function createMiddleware(ipx) {
           return
         } catch (error) {
           // Log the error but continue to generate fresh image
-          strapi.log.error(`Cache read error: ${error.message}`)
+          strapi.log.error(`Cache read error: ${ error.message }`)
         }
       }
     }
@@ -148,23 +146,20 @@ function createMiddleware(ipx) {
 
     // Set up a timeout to prevent long-running image processing operations
     // that could consume excessive memory
-    let processingTimeout;
+    let processingTimeout
     const timeoutPromise = new Promise((_, reject) => {
       processingTimeout = setTimeout(() => {
-        reject(new Error('Image processing timed out'));
-      }, 30000); // 30 seconds timeout
-    });
+        reject(new Error('Image processing timed out'))
+      }, 30000) // 30 seconds timeout
+    })
 
     // Get image meta from source
     try {
       // Use Promise.race to implement the timeout
-      const src = await Promise.race([
-        img.getSourceMeta(),
-        timeoutPromise
-      ]);
+      const src = await Promise.race([img.getSourceMeta(), timeoutPromise])
 
       // Clear the timeout since the operation completed successfully
-      clearTimeout(processingTimeout);
+      clearTimeout(processingTimeout)
 
       // Caching headers
       if (src.mtime) {
@@ -184,20 +179,17 @@ function createMiddleware(ipx) {
       }
 
       // Get converted image - create a new timeout for this operation
-      let processTimeoutId;
+      let processTimeoutId
       const processTimeoutPromise = new Promise((_, reject) => {
         processTimeoutId = setTimeout(() => {
-          reject(new Error('Image processing timed out'));
-        }, 30000); // 30 seconds timeout
-      });
+          reject(new Error('Image processing timed out'))
+        }, 30000) // 30 seconds timeout
+      })
 
-      const { data, format } = await Promise.race([
-        img.process(),
-        processTimeoutPromise
-      ]);
+      const { data, format } = await Promise.race([img.process(), processTimeoutPromise])
 
       // Clear the timeout since the operation completed successfully
-      clearTimeout(processTimeoutId);
+      clearTimeout(processTimeoutId)
 
       // ETag
       const etag = getEtag(data)
@@ -210,12 +202,12 @@ function createMiddleware(ipx) {
           await Promise.all([
             writeFile(tempTypePath, `image/${ format }`, 'utf-8'),
             writeFile(tempEtagPath, etag, 'utf-8'),
-            writeFile(tempFilePath, data)
-          ]);
-          strapi.log.debug(`Cached image: ${id}`);
+            writeFile(tempFilePath, data),
+          ])
+          strapi.log.debug(`Cached image: ${ id }`)
         } catch (error) {
           // Log the error but continue with the request
-          strapi.log.error(`Cache write error: ${error.message}`);
+          strapi.log.error(`Cache write error: ${ error.message }`)
         }
       }
 
@@ -232,12 +224,12 @@ function createMiddleware(ipx) {
 
       ctx.body = data
     } catch (error) {
-      const statusCode = parseInt(error.statusCode, 10) || 500
+      const statusCode = Number.parseInt(error.statusCode, 10) || 500
       const statusMessage = error.message ? `IPX Error (${ error.message })` : `IPX Error (${ statusCode })`
 
       // Log more detailed error information
       if (error.stack) {
-        strapi.log.error(`${statusMessage}\n${error.stack}`)
+        strapi.log.error(`${ statusMessage }\n${ error.stack }`)
       } else {
         strapi.log.error(statusMessage)
       }
@@ -245,13 +237,16 @@ function createMiddleware(ipx) {
       // Add more specific error handling based on error type
       if (error.code === 'ENOENT') {
         // File not found
-        strapi.log.debug(`Source image not found: ${id}`)
+        strapi.log.debug(`Source image not found: ${ id }`)
         ctx.status = 404
-      } else if (error.message && error.message.includes('memory')) {
+      } else if (error.message?.includes('memory')) {
         // Memory-related errors
-        strapi.log.error(`Memory error processing image: ${id}`)
+        strapi.log.error(`Memory error processing image: ${ id }`)
         // Clean up any resources that might be leaking
-        global.gc && global.gc(); // Force garbage collection if available
+        if (global.gc) {
+          global.gc() // Force garbage collection if available
+        }
+
         ctx.status = 500
       } else {
         // Generic error
@@ -264,6 +259,4 @@ function createMiddleware(ipx) {
   }
 }
 
-module.exports = {
-  createMiddleware
-}
+export { createMiddleware }
