@@ -48,29 +48,8 @@
     "vitepress": "^1.6.3"
   },
   "overrides": {
-    "sharp": "^0.34.2"
+    "sharp": "^0.34.3"
   },
-  "author": {
-    "name": "Sacha Stafyniak",
-    "email": "sacha@digisquad.io",
-    "url": "https://digisquad.io"
-  },
-  "maintainers": [
-    {
-      "name": "Strapi Community",
-      "url": "https://github.com/strapi-community"
-    },
-    {
-      "name": "Sacha Stafyniak",
-      "email": "sacha@digisquad.io",
-      "url": "https://digisquad.io",
-      "lead": true
-    }
-  ],
-  "bugs": {
-    "url": "https://github.com/strapi-community/strapi-plugin-local-image-sharp/issues"
-  },
-  "homepage": "https://github.com/strapi-community/strapi-plugin-local-image-sharp",
   "engines": {
     "node": ">=20.x.x <=22.x.x",
     "npm": ">=8.0.0"
